@@ -1,0 +1,73 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.dll
+
+# Cython debug symbols
+*.cython-*
+
+# Distribution / packaging
+.Python
+env/
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Other
+*.log
+
+# Local settings
+*.env
+*.venv
+
+# Ignore IDE files
+.idea/
+
+# Ignore temporary files
+*.swp
+*.swo
+~*
+
+# Ignore files from wheel builds
+*.whl
+
+# Ignore files from pytest
+.pytest_cache/
+
+# Ignore files from mypy
+.mypy_cache/
+
+tmp/
+
+/bbdc_cli.egg-info/
