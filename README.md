@@ -3,7 +3,8 @@
 A small, practical Typer CLI for Bitbucket Data Center / Server REST API.
 
 It reads credentials from environment variables and provides high-signal PR workflows (list, create, comment,
-approve, merge, update metadata, manage reviewers/participants) without needing a full SDK.
+approve, merge, update metadata, manage reviewers/participants, review completion, diffs, etc.) without needing a
+full SDK.
 
 ## Requirements
 
@@ -63,7 +64,7 @@ bbdc doctor
 
 If this succeeds, your base URL + token are working.
 
-## Usage
+## Common commands
 
 Show help:
 
@@ -76,12 +77,6 @@ List pull requests:
 
 ```bash
 bbdc pr list --project GL_KAIF_APP-ID-2866825_DSG --repo mercury-viz
-```
-
-Output raw JSON:
-
-```bash
-bbdc pr list -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz --json
 ```
 
 Get a pull request:
@@ -116,18 +111,6 @@ bbdc pr create \
   --reviewer other.username
 ```
 
-Note: reviewer identity fields can vary by Bitbucket version/config.
-This CLI uses `{"user": {"name": "<reviewer>"}}`. If your server expects a different user key
-(e.g. slug), adjust the implementation in `bbdc_cli/__main__.py`.
-
-Create as draft (only if your Bitbucket supports it):
-
-```bash
-bbdc pr create ... --draft
-# or explicitly disable:
-bbdc pr create ... --no-draft
-```
-
 Approve, decline, merge:
 
 ```bash
@@ -153,12 +136,22 @@ bbdc pr participants add -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 --user
 bbdc pr participants status -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 alice --status APPROVED
 ```
 
-Comment on a pull request:
+Review completion and comments:
 
 ```bash
-bbdc pr comment -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 \
-  --text "LGTM. One nit: ..."
+bbdc pr review complete -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 --comment "Looks good" --status APPROVED
+bbdc pr comments add -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 --text "LGTM"
 ```
+
+Diffs and commits:
+
+```bash
+bbdc pr commits -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123
+bbdc pr diff -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123
+bbdc pr diff-file -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 src/main.py
+```
+
+See the full command reference in `docs/CLI.md` and usage examples in `docs/examples.md`.
 
 ## Troubleshooting
 
