@@ -1,84 +1,98 @@
 # bbdc-cli
 
-A small, practical **Typer** CLI for **Bitbucket Data Center / Server** REST API.
+A small, practical Typer CLI for Bitbucket Data Center / Server REST API.
 
-It reads credentials from environment variables and gives you a few high-signal commands (list PRs, create PRs, comment, etc.) without needing a full SDK.
-
----
+It reads credentials from environment variables and provides high-signal PR workflows (list, create, comment,
+approve, merge, update metadata, manage reviewers/participants) without needing a full SDK.
 
 ## Requirements
 
 - Python 3.9+
 - `pipx` recommended for isolated install
 
----
+## Install
 
-## Install (pipx)
+From PyPI:
 
-From the project root (the folder containing `pyproject.toml`):
+```bash
+pipx install bbdc-cli
+# or
+pip install bbdc-cli
+```
+
+From source (repo root with `pyproject.toml`):
 
 ```bash
 pipx install .
 
-If you’re iterating on the code locally:
-
+# If you are iterating locally:
 pipx install -e .
 
-Reinstall after changes (non-editable install):
-
+# Reinstall after changes (non-editable install):
 pipx reinstall bbdc-cli
 
-Uninstall:
-
+# Uninstall:
 pipx uninstall bbdc-cli
+```
 
-
-⸻
-
-Configuration
+## Configuration
 
 The CLI uses two environment variables:
-	•	BITBUCKET_SERVER: base REST URL ending in /rest
-	•	Example (BBVA-style context path):
+
+- `BITBUCKET_SERVER`: base REST URL ending in `/rest`
+- `BITBUCKET_API_TOKEN`: Bitbucket personal access token (PAT)
+
+Example (BBVA-style context path):
+
+```
 https://bitbucket.globaldevtools.bbva.com/bitbucket/rest
-	•	BITBUCKET_API_TOKEN: Bitbucket personal access token (PAT)
+```
 
 Set them:
 
+```bash
 export BITBUCKET_SERVER="https://bitbucket.globaldevtools.bbva.com/bitbucket/rest"
 export BITBUCKET_API_TOKEN="YOUR_TOKEN"
+```
 
-Quick sanity check
+## Quick check
 
+```bash
 bbdc doctor
+```
 
 If this succeeds, your base URL + token are working.
 
-⸻
-
-Usage
+## Usage
 
 Show help:
 
+```bash
 bbdc --help
 bbdc pr --help
+```
 
-List pull requests
+List pull requests:
 
-List open PRs in a repo:
-
+```bash
 bbdc pr list --project GL_KAIF_APP-ID-2866825_DSG --repo mercury-viz
+```
 
 Output raw JSON:
 
+```bash
 bbdc pr list -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz --json
+```
 
-Get a pull request
+Get a pull request:
 
+```bash
 bbdc pr get -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123
+```
 
-Create a pull request
+Create a pull request:
 
+```bash
 bbdc pr create \
   --project GL_KAIF_APP-ID-2866825_DSG \
   --repo mercury-viz \
@@ -86,9 +100,11 @@ bbdc pr create \
   --to-branch develop \
   --title "Add viz panel" \
   --description "Implements X"
+```
 
-Add reviewers (repeat --reviewer):
+Add reviewers (repeat `--reviewer`):
 
+```bash
 bbdc pr create \
   -p GL_KAIF_APP-ID-2866825_DSG \
   -r mercury-viz \
@@ -98,61 +114,84 @@ bbdc pr create \
   --description "Implements X" \
   --reviewer some.username \
   --reviewer other.username
+```
 
 Note: reviewer identity fields can vary by Bitbucket version/config.
-This CLI uses {"user": {"name": "<reviewer>"}}. If your server expects a different user key
-(e.g. slug), adjust the implementation in bbdc_cli/__main__.py.
+This CLI uses `{"user": {"name": "<reviewer>"}}`. If your server expects a different user key
+(e.g. slug), adjust the implementation in `bbdc_cli/__main__.py`.
 
 Create as draft (only if your Bitbucket supports it):
 
+```bash
 bbdc pr create ... --draft
 # or explicitly disable:
 bbdc pr create ... --no-draft
+```
 
-Comment on a pull request
+Approve, decline, merge:
 
+```bash
+bbdc pr approve -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123
+bbdc pr decline -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 --comment "Not proceeding"
+bbdc pr merge -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 --message "LGTM"
+```
+
+Update metadata:
+
+```bash
+bbdc pr update -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 \
+  --title "New title" \
+  --description "Updated description" \
+  --reviewer some.username
+```
+
+Participants / reviewers:
+
+```bash
+bbdc pr participants list -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123
+bbdc pr participants add -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 --user alice --role REVIEWER
+bbdc pr participants status -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 alice --status APPROVED
+```
+
+Comment on a pull request:
+
+```bash
 bbdc pr comment -p GL_KAIF_APP-ID-2866825_DSG -r mercury-viz 123 \
   --text "LGTM. One nit: ..."
+```
 
+## Troubleshooting
 
-⸻
+`BITBUCKET_SERVER` must end with `/rest`.
 
-Troubleshooting
+Use the REST base, not the UI URL. For instances hosted under `/bitbucket`, the REST base is often:
 
-BITBUCKET_SERVER must end with '/rest'
+- UI: `https://host/bitbucket/...`
+- REST: `https://host/bitbucket/rest`
 
-Use the REST base, not the UI URL. For instances hosted under /bitbucket, the REST base is often:
-	•	UI: https://host/bitbucket/...
-	•	REST: https://host/bitbucket/rest
+Unauthorized / 401 / 403:
 
-Unauthorized / 401 / 403
-	•	Token missing or incorrect
-	•	Token lacks required permissions for that project/repo
-	•	Your Bitbucket instance may require a different auth scheme (rare if PAT is enabled)
+- Token missing or incorrect
+- Token lacks required permissions for that project/repo
+- Your Bitbucket instance may require a different auth scheme (rare if PAT is enabled)
 
-404 Not Found
+404 Not Found:
 
 Usually one of:
-	•	Wrong BITBUCKET_SERVER base path (/rest vs /bitbucket/rest)
-	•	Wrong --project key or --repo slug
-	•	PR id doesn’t exist in that repo
 
-⸻
+- Wrong `BITBUCKET_SERVER` base path (`/rest` vs `/bitbucket/rest`)
+- Wrong `--project` key or `--repo` slug
+- PR id does not exist in that repo
 
-Development
+## Development
 
 Run without installing:
 
+```bash
 python -m bbdc_cli --help
-
-Or run the entrypoint function:
-
 python -m bbdc_cli doctor
+```
 
-
-⸻
-
-License
+## License
 
 Mercury - BBVA
-
