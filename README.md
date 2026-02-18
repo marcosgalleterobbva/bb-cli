@@ -211,8 +211,8 @@ This separation is the correct approach and avoids coupling Codex behavior to pa
 
 ### Codex runtime execution caveat
 
-Some Codex runtimes may not have DNS/VPN/network access to your Bitbucket host. In those contexts, `bbdc` execution
-from Codex can fail even though the same command works on the user's machine.
+For this BBVA infrastructure, assume Codex runtimes cannot execute `bbdc` against Bitbucket (DNS/VPN/network
+constraints), even though the same command works on the user's machine.
 
 Typical error:
 - `Request failed: HTTPSConnectionPool(... NameResolutionError ... Failed to resolve ...)`

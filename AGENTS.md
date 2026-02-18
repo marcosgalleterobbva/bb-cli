@@ -21,8 +21,8 @@ bbdc doctor
 ```
 
 Codex runtime caveat:
-- Agent runtimes may not have DNS/VPN/network access to Bitbucket.
-- If `bbdc` fails with connectivity errors (for example `NameResolutionError`), provide commands for the user to run locally and continue from user-provided output.
+- For this BBVA environment, agents must never execute `bbdc` in Codex.
+- Always provide commands for the user to run locally and continue from user-provided output.
 
 ## Core commands (overview)
 
