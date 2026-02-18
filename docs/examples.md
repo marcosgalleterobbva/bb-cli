@@ -9,7 +9,7 @@ These examples use a fictional project `GL_KAIF_APP-ID-2866825_DSG` and repo `me
 bbdc account me
 
 # Show partial/error structure explicitly
-bbdc account me --json
+bbdc account me
 
 # Include profile/settings when your slug is known
 bbdc account me --user-slug alice --include-settings

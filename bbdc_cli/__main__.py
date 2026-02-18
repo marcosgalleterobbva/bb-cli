@@ -1758,7 +1758,6 @@ def account_me(
     ),
     limit: int = typer.Option(25, help="Page size for account-related paged endpoints"),
     max_items: int = typer.Option(100, help="Max items per account-related endpoint"),
-    json_out: bool = typer.Option(False, "--json", help="Print raw JSON response"),
 ):
     """Get a consolidated snapshot of the authenticated account.
 
@@ -1773,10 +1772,7 @@ def account_me(
         limit=limit,
         max_items=max_items,
     )
-    if json_out:
-        _print_json(resp["data"])
-    else:
-        _print_json(resp["data"])
+    _print_json(resp["data"])
 
 
 @pr_app.command("list")

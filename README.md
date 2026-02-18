@@ -91,8 +91,8 @@ Get information about your authenticated account:
 bbdc account me
 
 # if some account endpoints are not permitted with your token,
-# account me returns partial JSON with "partial" + "errors"
-bbdc account me --json
+# account me still returns partial JSON with "partial" + "errors"
+bbdc account me
 
 # include user profile and settings when your slug is known
 bbdc account me --user-slug your.user --include-settings
