@@ -36,6 +36,17 @@ pipx reinstall bbdc-cli
 pipx uninstall bbdc-cli
 ```
 
+## Release Tooling
+
+```bash
+pip install -e ".[build]"
+make bump-patch   # or: make bump-minor / make bump-major
+make build
+make check
+make publish-testpypi
+make publish-pypi
+```
+
 ## Configuration
 
 The CLI uses two environment variables:
@@ -234,18 +245,22 @@ Recommended split of responsibilities:
 
 This separation is the correct approach and avoids coupling Codex behavior to package release timing.
 
-### Codex runtime execution caveat
+### Codex runtime execution policy
 
-For this BBVA infrastructure, assume Codex runtimes cannot execute `bbdc` against Bitbucket (DNS/VPN/network
-constraints), even though the same command works on the user's machine.
+Default mode is `generic`.
+
+Use `bbva` mode only when explicitly requested (for example `Mode: bbva`) or when user-level guidance (for example
+`~/.codex/AGENTS.md`) sets BBVA as default. In `bbva` mode, assume Codex runtimes cannot execute `bbdc` against
+Bitbucket (DNS/VPN/network constraints), even though the same command works on the user's machine.
 
 Typical error:
 - `Request failed: HTTPSConnectionPool(... NameResolutionError ... Failed to resolve ...)`
 
 Recommended workflow in Codex:
-1. Codex generates exact `bbdc` commands.
-2. User runs commands locally in their terminal.
-3. User shares output back to Codex for analysis or next steps.
+1. In `generic` mode, Codex executes `bbdc` when possible.
+2. In `bbva` mode (or if execution is unavailable), Codex generates exact `bbdc` commands.
+3. User runs commands locally in their terminal.
+4. User shares output back to Codex for analysis or next steps.
 
 ## Troubleshooting
 

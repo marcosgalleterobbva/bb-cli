@@ -20,9 +20,11 @@ Sanity check:
 bbdc doctor
 ```
 
-Codex runtime caveat:
-- For this BBVA environment, agents must never execute `bbdc` in Codex.
-- Always provide commands for the user to run locally and continue from user-provided output.
+Codex runtime policy:
+- Default mode is `generic`.
+- Use `bbva` mode only when explicitly requested (for example `Mode: bbva`) or when user-level guidance sets BBVA as default.
+- In `generic` mode, prefer executing `bbdc` in Codex when available.
+- In `bbva` mode, do not execute `bbdc` in Codex; provide commands for the user to run locally and continue from user-provided output.
 
 ## Core commands (overview)
 

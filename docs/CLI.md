@@ -2,7 +2,7 @@
 
 This is the authoritative command reference derived from `bbdc_cli/__main__.py`.
 
-Codex runtime note: for this BBVA setup, do not execute `bbdc` from Codex. Run `bbdc` commands in your local terminal and share output back to Codex.
+Codex runtime note: default mode is `generic` (execute `bbdc` from Codex when available). Use `bbva` mode only when explicitly requested or when user-level guidance sets it as default; in `bbva` mode, run `bbdc` commands in your local terminal and share output back to Codex.
 
 Global:
 
